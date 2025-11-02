@@ -16,7 +16,7 @@
   "bugs": {
     "url": "https://github.com/yourusername/ngx-rehydrate/issues"
   },
-  "homepage": "https://github.com/yourusername/ngx-rehydrate#readme",
+  "homepage": "solid.expert",
   "peerDependencies": {
     "@angular/common": "^19.0.0",
     "@angular/core": "^19.0.0",
