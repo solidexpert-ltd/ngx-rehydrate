@@ -37,13 +37,11 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Install ng-packagr and dependencies
-        run: |
-          npm install -g @angular/cli
-          npm install
+      - name: Install dependencies
+        run: npm install
 
       - name: Build library
-        run: ng-packagr -p ng-package.json
+        run: npm run build
 
       - name: Verify build output
         run: |

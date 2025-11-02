@@ -24,17 +24,15 @@ jobs:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Install ng-packagr and dependencies
-        run: |
-          npm install -g @angular/cli
-          npm install
+      - name: Install dependencies
+        run: npm install
 
       - name: Update version if specified
         if: github.event.inputs.version != ''
         run: npm version ${{ github.event.inputs.version }} --no-git-tag-version
 
       - name: Build library
-        run: ng-packagr -p ng-package.json
+        run: npm run build
 
       - name: Verify build output
         run: |
