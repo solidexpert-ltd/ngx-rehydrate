@@ -1,0 +1,83 @@
+name: Build and Test @solidexpert/ngx-rehydrate
+
+on:
+  pull_request:
+    paths:
+      - 'libs/solidexpert/ngx-rehydrate/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/build-rehydrate.yml'
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - 'libs/solidexpert/ngx-rehydrate/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/build-rehydrate.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18, 20]
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build library
+        run: npm run ng build solidexpert-ngx-rehydrate -- --configuration production
+
+      - name: Verify build output
+        run: |
+          if [ ! -d "dist/solidexpert/ngx-rehydrate" ]; then
+            echo "❌ Build output directory not found!"
+            exit 1
+          fi
+          echo "✅ Build successful!"
+          echo "Build output contents:"
+          ls -la dist/solidexpert/ngx-rehydrate/
+
+      - name: Check package.json
+        run: |
+          cd dist/solidexpert/ngx-rehydrate
+          echo "Package information:"
+          node -p "JSON.stringify(require('./package.json'), null, 2)"
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        if: matrix.node-version == 20
+        with:
+          name: ngx-rehydrate-build
+          path: dist/solidexpert/ngx-rehydrate/
+          retention-days: 7
+
+      - name: Create build summary
+        if: matrix.node-version == 20
+        run: |
+          cd dist/solidexpert/ngx-rehydrate
+          echo "## ✅ Build Successful" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Package:** @solidexpert/ngx-rehydrate" >> $GITHUB_STEP_SUMMARY
+          echo "**Version:** $(node -p "require('./package.json').version")" >> $GITHUB_STEP_SUMMARY
+          echo "**Node.js:** ${{ matrix.node-version }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Files Generated" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          ls -lh >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
