@@ -7,18 +7,17 @@ This guide walks you through the process of publishing a new version of the `@so
 Before you can publish, ensure:
 
 1. ✅ You have npm publish permissions for the `@solidexpert` scope
-2. ✅ The `NPM_TOKEN` secret is configured in GitHub (see [workflows README](.github/workflows/README.md))
+2. ✅ The `NPM_TOKEN` secret is configured in GitHub (see [workflows README](workflows/README.md))
 3. ✅ All changes are committed and pushed to the repository
-4. ✅ The build passes locally (`npm run build:rehydrate`)
+4. ✅ The build passes locally (`npm run build`)
 
 ## Publishing Steps
 
 ### Step 1: Update Version
 
-Update the version in the library's `package.json`:
+Update the version in `package.json`:
 
 ```bash
-cd libs/solidexpert/ngx-rehydrate
 npm version patch  # or minor, or major
 ```
 
@@ -30,8 +29,8 @@ This will update the version according to [semver](https://semver.org/):
 ### Step 2: Commit Version Change
 
 ```bash
-git add libs/solidexpert/ngx-rehydrate/package.json
-git commit -m "chore: bump @solidexpert/ngx-rehydrate to vX.X.X"
+git add package.json
+git commit -m "chore: bump to vX.X.X"
 git push origin main
 ```
 
@@ -41,7 +40,7 @@ git push origin main
 2. Click on **"Releases"** (right sidebar)
 3. Click **"Draft a new release"**
 4. Fill in the details:
-   - **Tag**: Create a new tag (e.g., `ngx-rehydrate-v1.0.1`)
+   - **Tag**: Create a new tag (e.g., `v1.0.1`)
    - **Release title**: `@solidexpert/ngx-rehydrate v1.0.1`
    - **Description**: Add release notes (see template below)
 5. Click **"Publish release"**

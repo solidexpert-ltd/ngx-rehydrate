@@ -5,15 +5,18 @@
   "keywords": ["angular", "ngrx", "ssr", "rehydration", "universal", "server-side-rendering"],
   "author": "SolidExpert",
   "license": "MIT",
+  "scripts": {
+    "build": "ng-packagr -p ng-package.json",
+    "pack": "npm run build && cd dist && npm pack"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/one-portal-angular.git",
-    "directory": "libs/solidexpert/ngx-rehydrate"
+    "url": "https://github.com/yourusername/ngx-rehydrate.git"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/one-portal-angular/issues"
+    "url": "https://github.com/yourusername/ngx-rehydrate/issues"
   },
-  "homepage": "https://github.com/yourusername/one-portal-angular/tree/main/libs/solidexpert/ngx-rehydrate#readme",
+  "homepage": "https://github.com/yourusername/ngx-rehydrate#readme",
   "peerDependencies": {
     "@angular/common": "^19.0.0",
     "@angular/core": "^19.0.0",
@@ -23,6 +26,17 @@
   },
   "dependencies": {
     "tslib": "^2.6.0"
+  },
+  "devDependencies": {
+    "@angular/common": "^19.2.4",
+    "@angular/compiler": "^19.2.4",
+    "@angular/compiler-cli": "^19.2.4",
+    "@angular/core": "^19.2.4",
+    "@angular/platform-server": "^19.2.4",
+    "@ngrx/store": "^19.1.0",
+    "ng-packagr": "^19.2.2",
+    "rxjs": "^7.8.1",
+    "typescript": "~5.8.2"
   }
 }
 

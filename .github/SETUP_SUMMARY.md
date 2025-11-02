@@ -13,7 +13,7 @@ Two workflows have been created in `.github/workflows/`:
 - **Purpose**: Validates builds on every change
 - **Features**:
   - Tests on Node.js 18 and 20
-  - Builds the library in production mode
+  - Builds the library in production mode using ng-packagr
   - Verifies build output
   - Uploads build artifacts
   - Creates build summary
@@ -29,19 +29,18 @@ Two workflows have been created in `.github/workflows/`:
 
 ### 2. Package Configuration Updates
 
-#### `libs/solidexpert/ngx-rehydrate/package.json`
+#### `package.json`
 Enhanced with:
 - Repository information
 - Bug tracker URL
 - Homepage URL
 - License (MIT)
+- Build scripts (`build`, `pack`)
+- Development dependencies for standalone builds
 - Additional keywords for better npm discoverability
 
-#### Root `package.json`
-Added convenient build script:
-```bash
-npm run build:rehydrate
-```
+#### `ng-package.json`
+Updated to output to `./dist` (local to this repository)
 
 ### 3. Documentation
 
@@ -49,9 +48,10 @@ Created comprehensive documentation:
 
 - **`.github/workflows/README.md`** - Workflow usage guide
 - **`.github/PUBLISHING.md`** - Step-by-step publishing guide
-- **`libs/solidexpert/ngx-rehydrate/CONTRIBUTING.md`** - Development guide
-- **`libs/solidexpert/ngx-rehydrate/.npmignore`** - Controls published files
-- **Updated library README** - Added development and publishing sections
+- **`.github/QUICK_START.md`** - Quick reference guide
+- **`CONTRIBUTING.md`** - Development guide
+- **`.npmignore`** - Controls published files
+- **Updated README** - Added development and publishing sections
 
 ## 🚀 Getting Started
 
@@ -65,13 +65,17 @@ Created comprehensive documentation:
    - Value: Your npm token
 
 2. **Update Repository URLs** (if needed):
-   Edit `libs/solidexpert/ngx-rehydrate/package.json`:
+   Edit `package.json`:
    ```json
    "repository": {
      "type": "git",
-     "url": "https://github.com/YOUR_ORG/YOUR_REPO.git",
-     "directory": "libs/solidexpert/ngx-rehydrate"
+     "url": "https://github.com/YOUR_ORG/ngx-rehydrate.git"
    }
+   ```
+
+3. **Install Dependencies**:
+   ```bash
+   npm install
    ```
 
 ### Publishing Your First Version
@@ -80,7 +84,6 @@ Created comprehensive documentation:
 
 1. Update version:
    ```bash
-   cd libs/solidexpert/ngx-rehydrate
    npm version 1.0.0  # or your desired version
    ```
 
@@ -93,7 +96,7 @@ Created comprehensive documentation:
 
 3. Create GitHub Release:
    - Go to GitHub → Releases → "Draft a new release"
-   - Tag: `ngx-rehydrate-v1.0.0`
+   - Tag: `v1.0.0`
    - Title: `@solidexpert/ngx-rehydrate v1.0.0`
    - Description: Add release notes
    - Click "Publish release"
@@ -111,11 +114,14 @@ Created comprehensive documentation:
 ### Testing Locally Before Publishing
 
 ```bash
+# Install dependencies
+npm install
+
 # Build the library
-npm run build:rehydrate
+npm run build
 
 # Navigate to build output
-cd dist/solidexpert/ngx-rehydrate
+cd dist
 
 # Create a test package
 npm pack
@@ -137,9 +143,9 @@ npm install /path/to/@solidexpert-ngx-rehydrate-1.0.0.tgz
 **What it does**:
 1. Checks out code
 2. Sets up Node.js (versions 18 & 20)
-3. Installs dependencies
-4. Builds library in production mode
-5. Verifies build output
+3. Installs ng-packagr and dependencies
+4. Builds library using ng-packagr
+5. Verifies build output in `dist/`
 6. Uploads artifacts
 7. Creates summary report
 
@@ -153,12 +159,12 @@ npm install /path/to/@solidexpert-ngx-rehydrate-1.0.0.tgz
 
 **What it does**:
 1. Checks out code
-2. Sets up Node.js 20
-3. Installs dependencies
+2. Sets up Node.js 20 with npm registry
+3. Installs ng-packagr and dependencies
 4. Optionally updates version
-5. Builds library in production mode
-6. Verifies build output
-7. Publishes to npm
+5. Builds library using ng-packagr
+6. Verifies build output in `dist/`
+7. Publishes to npm from `dist/`
 8. Creates publish summary
 
 **Required Secret**: `NPM_TOKEN`
@@ -176,7 +182,6 @@ npm install /path/to/@solidexpert-ngx-rehydrate-1.0.0.tgz
 #### ❌ "Version already published"
 **Solution**: Bump the version number:
 ```bash
-cd libs/solidexpert/ngx-rehydrate
 npm version patch  # or minor, or major
 ```
 
@@ -188,9 +193,9 @@ npm version patch  # or minor, or major
 
 #### ❌ Build fails in CI
 **Solution**:
-1. Run locally first: `npm run build:rehydrate`
+1. Run locally first: `npm run build`
 2. Check workflow logs for specific errors
-3. Ensure all dependencies are correctly specified
+3. Ensure all dependencies are correctly specified in `package.json` and `devDependencies`
 
 #### ⏱️ Package not appearing on npm
 **Solution**: Wait 2-5 minutes. npm's CDN needs time to propagate.
@@ -220,10 +225,11 @@ After publishing, verify:
 
 1. ✅ Set up `NPM_TOKEN` secret
 2. ✅ Update repository URLs in package.json (if needed)
-3. ✅ Test local build: `npm run build:rehydrate`
-4. ✅ Create your first release
-5. ✅ Monitor the workflow execution
-6. ✅ Verify publication on npm
+3. ✅ Install dependencies: `npm install`
+4. ✅ Test local build: `npm run build`
+5. ✅ Create your first release
+6. ✅ Monitor the workflow execution
+7. ✅ Verify publication on npm
 
 ## 📝 File Checklist
 
@@ -233,12 +239,13 @@ All these files have been created or updated:
 - [x] `.github/workflows/publish-rehydrate.yml`
 - [x] `.github/workflows/README.md`
 - [x] `.github/PUBLISHING.md`
+- [x] `.github/QUICK_START.md`
 - [x] `.github/SETUP_SUMMARY.md` (this file)
-- [x] `libs/solidexpert/ngx-rehydrate/.npmignore`
-- [x] `libs/solidexpert/ngx-rehydrate/CONTRIBUTING.md`
-- [x] `libs/solidexpert/ngx-rehydrate/package.json` (updated)
-- [x] `libs/solidexpert/ngx-rehydrate/README.md` (updated)
-- [x] `package.json` (added build:rehydrate script)
+- [x] `.npmignore`
+- [x] `CONTRIBUTING.md`
+- [x] `package.json` (updated with scripts and devDependencies)
+- [x] `ng-package.json` (updated dest path)
+- [x] `README.md` (updated)
 
 ## 🎉 You're All Set!
 
@@ -248,5 +255,5 @@ Your library is now configured for automated building and publishing. Just creat
 
 **Created**: November 2, 2025  
 **Library**: @solidexpert/ngx-rehydrate  
-**Repository**: one-portal-angular
+**Repository**: Standalone ngx-rehydrate repository
 

@@ -17,13 +17,18 @@
 
 ✅ Done! You only need to do this once.
 
+### Step 2: Install Dependencies
+
+```bash
+npm install
+```
+
 ## 📦 Publishing a New Version
 
 ### Quick Method (3 steps):
 
 ```bash
 # 1. Bump version
-cd libs/solidexpert/ngx-rehydrate
 npm version patch  # or: minor, major
 
 # 2. Commit and push
@@ -32,8 +37,8 @@ git commit -m "chore: bump to v1.0.1"
 git push origin main
 
 # 3. Create GitHub Release
-# Go to: https://github.com/YOUR_ORG/YOUR_REPO/releases/new
-# Tag: ngx-rehydrate-v1.0.1
+# Go to: https://github.com/YOUR_ORG/ngx-rehydrate/releases/new
+# Tag: v1.0.1
 # Title: @solidexpert/ngx-rehydrate v1.0.1
 # Click "Publish release"
 ```
@@ -43,14 +48,17 @@ git push origin main
 ## 🧪 Test Build Locally
 
 ```bash
+# Install dependencies (if not already done)
+npm install
+
 # Build library
-npm run build:rehydrate
+npm run build
 
 # Check output
-ls -la dist/solidexpert/ngx-rehydrate/
+ls -la dist/
 
 # Create test package
-cd dist/solidexpert/ngx-rehydrate
+cd dist
 npm pack
 ```
 

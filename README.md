@@ -177,22 +177,29 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines.
 To build the library locally:
 
 ```bash
-npm run build:rehydrate
+# Install dependencies
+npm install
+
+# Build the library
+npm run build
+
+# Create package for testing
+npm run pack
 ```
 
 ## Publishing
 
-This library is automatically published to npm via GitHub Actions. See [Publishing Guide](../../.github/PUBLISHING.md) for details.
+This library is automatically published to npm via GitHub Actions. See [Publishing Guide](.github/PUBLISHING.md) for details.
 
 ## Changelog
 
-See [GitHub Releases](https://github.com/yourusername/one-portal-angular/releases) for version history.
+See [GitHub Releases](https://github.com/yourusername/ngx-rehydrate/releases) for version history.
 
 ## Support
 
-- 📝 [Documentation](https://github.com/yourusername/one-portal-angular/tree/main/libs/solidexpert/ngx-rehydrate)
-- 🐛 [Report Issues](https://github.com/yourusername/one-portal-angular/issues)
-- 💬 [Discussions](https://github.com/yourusername/one-portal-angular/discussions)
+- 📝 [Documentation](https://github.com/yourusername/ngx-rehydrate#readme)
+- 🐛 [Report Issues](https://github.com/yourusername/ngx-rehydrate/issues)
+- 💬 [Discussions](https://github.com/yourusername/ngx-rehydrate/discussions)
 
 ## License
 

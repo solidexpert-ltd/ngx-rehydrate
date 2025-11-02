@@ -3,18 +3,20 @@ name: Build and Test @solidexpert/ngx-rehydrate
 on:
   pull_request:
     paths:
-      - 'libs/solidexpert/ngx-rehydrate/**'
+      - 'src/**'
       - 'package.json'
-      - 'package-lock.json'
+      - 'ng-package.json'
+      - 'tsconfig*.json'
       - '.github/workflows/build-rehydrate.yml'
   push:
     branches:
       - main
       - master
     paths:
-      - 'libs/solidexpert/ngx-rehydrate/**'
+      - 'src/**'
       - 'package.json'
-      - 'package-lock.json'
+      - 'ng-package.json'
+      - 'tsconfig*.json'
       - '.github/workflows/build-rehydrate.yml'
   workflow_dispatch:
 
@@ -36,25 +38,27 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Install ng-packagr and dependencies
+        run: |
+          npm install -g @angular/cli
+          npm install
 
       - name: Build library
-        run: npm run ng build solidexpert-ngx-rehydrate -- --configuration production
+        run: ng-packagr -p ng-package.json
 
       - name: Verify build output
         run: |
-          if [ ! -d "dist/solidexpert/ngx-rehydrate" ]; then
+          if [ ! -d "dist" ]; then
             echo "❌ Build output directory not found!"
             exit 1
           fi
           echo "✅ Build successful!"
           echo "Build output contents:"
-          ls -la dist/solidexpert/ngx-rehydrate/
+          ls -la dist/
 
       - name: Check package.json
         run: |
-          cd dist/solidexpert/ngx-rehydrate
+          cd dist
           echo "Package information:"
           node -p "JSON.stringify(require('./package.json'), null, 2)"
 
@@ -63,13 +67,13 @@ jobs:
         if: matrix.node-version == 20
         with:
           name: ngx-rehydrate-build
-          path: dist/solidexpert/ngx-rehydrate/
+          path: dist/
           retention-days: 7
 
       - name: Create build summary
         if: matrix.node-version == 20
         run: |
-          cd dist/solidexpert/ngx-rehydrate
+          cd dist
           echo "## ✅ Build Successful" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Package:** @solidexpert/ngx-rehydrate" >> $GITHUB_STEP_SUMMARY

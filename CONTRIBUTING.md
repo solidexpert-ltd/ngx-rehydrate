@@ -8,7 +8,7 @@ Thank you for your interest in contributing! This document provides guidelines f
 
 - Node.js 18 or 20
 - npm 9+
-- Angular CLI
+- ng-packagr
 
 ### Getting Started
 
@@ -16,7 +16,7 @@ Thank you for your interest in contributing! This document provides guidelines f
 
 ```bash
 git clone <repository-url>
-cd one-portal-angular
+cd ngx-rehydrate
 ```
 
 2. Install dependencies:
@@ -28,7 +28,7 @@ npm install
 3. Build the library:
 
 ```bash
-npm run build:rehydrate
+npm run build
 ```
 
 ## Making Changes
@@ -36,7 +36,7 @@ npm run build:rehydrate
 ### Project Structure
 
 ```
-libs/solidexpert/ngx-rehydrate/
+ngx-rehydrate/
 ├── src/
 │   ├── lib/
 │   │   ├── browser.ts              # Browser-side providers
@@ -46,6 +46,7 @@ libs/solidexpert/ngx-rehydrate/
 │   │   ├── tokens.ts               # Injection tokens
 │   │   └── utils.ts                # Helper functions
 │   └── public-api.ts               # Public API surface
+├── .github/                         # GitHub Actions workflows & docs
 ├── package.json                     # Package configuration
 ├── ng-package.json                  # ng-packagr configuration
 ├── tsconfig.lib.json                # TypeScript config
@@ -58,13 +59,13 @@ libs/solidexpert/ngx-rehydrate/
 2. Build the library to test:
 
 ```bash
-npm run build:rehydrate
+npm run build
 ```
 
 3. Test the build output:
 
 ```bash
-cd dist/solidexpert/ngx-rehydrate
+cd dist
 npm pack
 # This creates a .tgz file you can install in test projects
 ```
@@ -73,7 +74,7 @@ npm pack
 
 ```bash
 # In your test Angular app
-npm install /path/to/dist/solidexpert/ngx-rehydrate
+npm install /path/to/ngx-rehydrate/dist
 ```
 
 ### Code Style
@@ -97,10 +98,10 @@ Currently, the library doesn't have automated tests. When adding new features:
 Before submitting a PR, ensure the production build succeeds:
 
 ```bash
-npm run build:rehydrate
+npm run build
 ```
 
-Check the output in `dist/solidexpert/ngx-rehydrate/` for:
+Check the output in `dist/` for:
 - ✅ Proper TypeScript declarations (`.d.ts` files)
 - ✅ ES2022 modules
 - ✅ Metadata files for Angular
@@ -149,7 +150,7 @@ git push origin feature/your-feature-name
 
 ## Release Process
 
-Releases are handled by maintainers. See [PUBLISHING.md](../../.github/PUBLISHING.md) for details.
+Releases are handled by maintainers. See [PUBLISHING.md](.github/PUBLISHING.md) for details.
 
 ## Questions?
 

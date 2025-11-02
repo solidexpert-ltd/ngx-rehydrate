@@ -25,37 +25,37 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Install ng-packagr and dependencies
+        run: |
+          npm install -g @angular/cli
+          npm install
 
       - name: Update version if specified
         if: github.event.inputs.version != ''
-        run: |
-          cd libs/solidexpert/ngx-rehydrate
-          npm version ${{ github.event.inputs.version }} --no-git-tag-version
+        run: npm version ${{ github.event.inputs.version }} --no-git-tag-version
 
       - name: Build library
-        run: npm run ng build solidexpert-ngx-rehydrate -- --configuration production
+        run: ng-packagr -p ng-package.json
 
       - name: Verify build output
         run: |
-          if [ ! -d "dist/solidexpert/ngx-rehydrate" ]; then
+          if [ ! -d "dist" ]; then
             echo "Build output directory not found!"
             exit 1
           fi
           echo "Build output contents:"
-          ls -la dist/solidexpert/ngx-rehydrate/
+          ls -la dist/
 
       - name: Publish to npm
         run: |
-          cd dist/solidexpert/ngx-rehydrate
+          cd dist
           npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Create build summary
         run: |
-          cd dist/solidexpert/ngx-rehydrate
+          cd dist
           echo "## 📦 Package Published" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Package:** @solidexpert/ngx-rehydrate" >> $GITHUB_STEP_SUMMARY

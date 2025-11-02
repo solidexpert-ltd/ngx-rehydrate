@@ -47,7 +47,7 @@ To publish to npm, you need to add your npm token to GitHub Secrets:
 
 #### Option A: Using GitHub Releases (Recommended)
 
-1. Update the version in `libs/solidexpert/ngx-rehydrate/package.json`
+1. Update the version in `package.json`
 2. Commit and push the changes
 3. Go to your GitHub repository → Releases
 4. Click "Create a new release"
@@ -69,11 +69,16 @@ To publish to npm, you need to add your npm token to GitHub Secrets:
 Before publishing, test the build locally:
 
 ```bash
+# Install dependencies
+npm install
+
 # Build the library
-npm run build:rehydrate
+npm run build
+# or
+ng-packagr -p ng-package.json
 
 # Navigate to build output
-cd dist/solidexpert/ngx-rehydrate
+cd dist
 
 # Test the package
 npm pack
