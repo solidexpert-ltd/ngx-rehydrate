@@ -8,7 +8,9 @@ NgRx state rehydration library for Angular Universal SSR applications.
 - 🔄 Configurable merge strategies for state rehydration
 - 📦 Selective state slice rehydration
 - 🛠️ Easy to integrate with existing NgRx applications
-- 🎯 TypeScript support
+- 🎯 Full TypeScript support
+- ⚡ Modern standalone API (no modules required)
+- 🔧 Backward compatible with NgModule-based apps
 
 ## Installation
 
@@ -16,65 +18,31 @@ NgRx state rehydration library for Angular Universal SSR applications.
 npm install @solidexpert/ngx-rehydrate
 ```
 
-## Usage
+## Usage (Modern Standalone API)
 
 ### Browser Configuration
 
-In your `app.config.ts` (or `app.module.ts` for module-based apps):
+In your `app.config.ts`:
 
 ```typescript
+import { ApplicationConfig } from '@angular/core';
+import { provideRouter } from '@angular/router';
+import { provideStore } from '@ngrx/store';
 import { 
-  MergeStrategy, 
-  RehydrationRootConfig,
-  browserRehydrateReducer,
-  REHYDRATE_ROOT_CONFIG,
-  rehydrateFeature,
-  addSlice,
-  RehydrationLogger
+  provideRehydrateBrowser, 
+  MergeStrategy 
 } from '@solidexpert/ngx-rehydrate';
-
-// Configure which store slices to rehydrate
-const rehydrateConfig: RehydrationRootConfig = {
-  stores: ['auth', 'user', 'settings'],
-  mergeStrategy: MergeStrategy.OVERWRITE,
-  disableWarnings: false,
-};
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    // Provide rehydrate configuration
-    {
-      provide: REHYDRATE_ROOT_CONFIG,
-      useValue: rehydrateConfig,
-    },
-    // Add rehydrate feature to store
-    provideStore({
-      [rehydrateFeature.name]: rehydrateFeature.reducer,
+    provideRouter(routes),
+    provideStore(/* your reducers */),
+    // Add rehydration
+    provideRehydrateBrowser({
+      stores: ['auth', 'user', 'settings'],
+      mergeStrategy: MergeStrategy.OVERWRITE,
+      disableWarnings: false,
     }),
-    // Add rehydrate meta-reducer
-    {
-      provide: META_REDUCERS,
-      deps: [PLATFORM_ID, TransferState, REHYDRATE_ROOT_CONFIG],
-      useFactory: browserRehydrateReducer,
-      multi: true,
-    },
-    // Initialize slices on server
-    {
-      provide: APP_INITIALIZER,
-      useFactory: () => {
-        const platformId = inject(PLATFORM_ID);
-        const store = inject(Store);
-        const config = inject(REHYDRATE_ROOT_CONFIG);
-        
-        return () => {
-          if (isPlatformServer(platformId)) {
-            store.dispatch(addSlice({ slices: config.stores ?? [] }));
-          }
-        };
-      },
-      multi: true,
-    },
-    RehydrationLogger,
   ],
 };
 ```
@@ -84,23 +52,127 @@ export const appConfig: ApplicationConfig = {
 In your `app.config.server.ts`:
 
 ```typescript
-import { NgrxUniversalRehydrateServerModule } from '@solidexpert/ngx-rehydrate';
+import { ApplicationConfig } from '@angular/core';
+import { provideServerRendering } from '@angular/platform-server';
+import { provideRehydrateServer } from '@solidexpert/ngx-rehydrate';
+import { appConfig } from './app.config';
 
-const serverConfig: ApplicationConfig = {
+export const serverConfig: ApplicationConfig = {
   providers: [
+    ...appConfig.providers,
     provideServerRendering(),
-    importProvidersFrom(NgrxUniversalRehydrateServerModule.forServer()),
-  ]
+    provideRehydrateServer(),
+  ],
 };
+```
+
+### Feature-Level Rehydration
+
+For lazy-loaded routes or features:
+
+```typescript
+import { Routes } from '@angular/router';
+import { provideRehydrateFeature } from '@solidexpert/ngx-rehydrate';
+
+export const routes: Routes = [
+  {
+    path: 'admin',
+    providers: [
+      provideRehydrateFeature(['adminUsers', 'adminSettings'])
+    ],
+    loadChildren: () => import('./admin/routes'),
+  },
+];
+```
+
+## Configuration Options
+
+```typescript
+interface RehydrationRootConfig {
+  // Array of store slice names to rehydrate
+  stores: string[] | undefined;
+  
+  // Disable console warnings
+  disableWarnings: boolean;
+  
+  // Strategy for merging server and client state
+  mergeStrategy: MergeStrategy;
+}
 ```
 
 ## Merge Strategies
 
-- `MergeStrategy.OVERWRITE`: Replace browser state with server state
-- `MergeStrategy.MERGE_OVER`: Merge server state over browser state (server wins)
-- `MergeStrategy.MERGE_UNDER`: Merge browser state over server state (browser wins)
+- `MergeStrategy.OVERWRITE`: Replace browser state with server state (recommended for most cases)
+- `MergeStrategy.MERGE_OVER`: Merge server state over browser state (server wins on conflicts)
+- `MergeStrategy.MERGE_UNDER`: Merge browser state over server state (browser wins on conflicts)
+
+## Legacy NgModule-based API (Deprecated)
+
+<details>
+<summary>Click to expand legacy usage</summary>
+
+### Browser Module (Deprecated)
+
+```typescript
+import { NgrxUniversalRehydrateBrowserModule } from '@solidexpert/ngx-rehydrate';
+
+@NgModule({
+  imports: [
+    NgrxUniversalRehydrateBrowserModule.forRoot({
+      stores: ['auth', 'user'],
+      mergeStrategy: MergeStrategy.OVERWRITE,
+    }),
+  ],
+})
+export class AppModule {}
+```
+
+### Server Module (Deprecated)
+
+```typescript
+import { NgrxUniversalRehydrateServerModule } from '@solidexpert/ngx-rehydrate';
+
+@NgModule({
+  imports: [
+    NgrxUniversalRehydrateServerModule.forServer(),
+  ],
+})
+export class AppServerModule {}
+```
+
+**Note:** The NgModule-based API is deprecated. Please migrate to the standalone provider functions for better tree-shaking and simpler configuration.
+
+</details>
+
+## API Reference
+
+### `provideRehydrateBrowser(config?)`
+
+Provides rehydration for browser/client-side rendering.
+
+**Parameters:**
+- `config` (optional): Partial configuration object
+
+**Returns:** `EnvironmentProviders`
+
+### `provideRehydrateServer()`
+
+Provides rehydration for server-side rendering.
+
+**Returns:** `EnvironmentProviders`
+
+### `provideRehydrateFeature(stores)`
+
+Provides additional store slices for feature modules or lazy-loaded routes.
+
+**Parameters:**
+- `stores`: Array of store slice names
+
+**Returns:** `EnvironmentProviders`
 
 ## License
 
 MIT
+
+Copyright (c) 2025 Solidexpert LTD
 

@@ -9,7 +9,7 @@ import { FEATURE_STORES, REHYDRATE_ROOT_CONFIG } from './tokens';
 import { RehydrationRootConfig, defaultRehydrationRootConfig } from './utils';
 
 @NgModule({
-    imports: [RehydrateStoreModule],
+    imports: [RehydrateStoreModule], //git pull origin master
 })
 export class NgrxUniversalRehydrateBrowserRootModule {
     constructor(
