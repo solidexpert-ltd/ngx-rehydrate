@@ -33,7 +33,7 @@ export function provideRehydrateBrowser(
         ...config,
     };
 
-    const providers: Provider[] = [
+    const providers: (Provider | EnvironmentProviders)[] = [
         // Provide the rehydrate configuration
         {
             provide: REHYDRATE_ROOT_CONFIG,
@@ -93,7 +93,7 @@ export function provideRehydrateBrowser(
  * ```
  */
 export function provideRehydrateFeature(stores: string[]): EnvironmentProviders {
-    const providers: Provider[] = [
+    const providers: (Provider | EnvironmentProviders)[] = [
         {
             provide: APP_INITIALIZER,
             useFactory: () => {
