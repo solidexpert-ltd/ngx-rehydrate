@@ -170,6 +170,30 @@ Provides additional store slices for feature modules or lazy-loaded routes.
 
 **Returns:** `EnvironmentProviders`
 
+## Development
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines.
+
+To build the library locally:
+
+```bash
+npm run build:rehydrate
+```
+
+## Publishing
+
+This library is automatically published to npm via GitHub Actions. See [Publishing Guide](../../.github/PUBLISHING.md) for details.
+
+## Changelog
+
+See [GitHub Releases](https://github.com/yourusername/one-portal-angular/releases) for version history.
+
+## Support
+
+- 📝 [Documentation](https://github.com/yourusername/one-portal-angular/tree/main/libs/solidexpert/ngx-rehydrate)
+- 🐛 [Report Issues](https://github.com/yourusername/one-portal-angular/issues)
+- 💬 [Discussions](https://github.com/yourusername/one-portal-angular/discussions)
+
 ## License
 
 MIT
