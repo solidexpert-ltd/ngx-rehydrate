@@ -85,6 +85,125 @@ export const routes: Routes = [
 ];
 ```
 
+## Preventing Duplicate HTTP Requests
+
+Use the `withTransferState` operator to prevent duplicate HTTP requests during SSR hydration:
+
+```typescript
+import { inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { TransferState } from '@angular/core';
+import { withTransferState } from '@solidexpert/ngx-rehydrate';
+
+@Injectable({ providedIn: 'root' })
+export class UserService {
+  private http = inject(HttpClient);
+  private platformId = inject(PLATFORM_ID);
+  private transferState = inject(TransferState);
+
+  getUsers() {
+    return this.http.get('/api/users').pipe(
+      withTransferState('api-users', this.platformId, this.transferState)
+    );
+  }
+
+  getUserById(id: string) {
+    return this.http.get(`/api/users/${id}`).pipe(
+      withTransferState(`api-user-${id}`, this.platformId, this.transferState)
+    );
+  }
+}
+```
+
+**How it works:**
+- **Server**: HTTP request is made and marked in TransferState
+- **Browser (initial load)**: Request is skipped if already made on server
+- **Browser (subsequent)**: Request proceeds normally
+
+**Benefits:**
+- ⚡ Reduces unnecessary API calls
+- 🚀 Improves initial page load performance
+- 💾 Saves bandwidth and server resources
+- 🎯 Works seamlessly with NgRx Effects
+
+### Advanced Usage with Helper Function
+
+Create a base service with a helper method for cleaner code:
+
+```typescript
+@Injectable({ providedIn: 'root' })
+export class BaseApiService {
+  protected http = inject(HttpClient);
+  private platformId = inject(PLATFORM_ID);
+  private transferState = inject(TransferState);
+
+  // Helper method for transfer state
+  protected withTransfer<T>(key: string) {
+    return withTransferState<T>(key, this.platformId, this.transferState);
+  }
+}
+
+@Injectable({ providedIn: 'root' })
+export class UserService extends BaseApiService {
+  getUsers() {
+    return this.http.get<User[]>('/api/users').pipe(
+      this.withTransfer('api-users')
+    );
+  }
+
+  getPosts() {
+    return this.http.get<Post[]>('/api/posts').pipe(
+      this.withTransfer('api-posts')
+    );
+  }
+}
+```
+
+### Usage with NgRx Effects
+
+```typescript
+import { inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { TransferState } from '@angular/core';
+import { withTransferState } from '@solidexpert/ngx-rehydrate';
+import { switchMap, map, catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+
+@Injectable()
+export class UserEffects {
+  private actions$ = inject(Actions);
+  private userService = inject(UserService);
+  private platformId = inject(PLATFORM_ID);
+  private transferState = inject(TransferState);
+
+  loadUsers$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(UserActions.loadUsers),
+      switchMap(() =>
+        this.userService.getUsers().pipe(
+          withTransferState('users-list', this.platformId, this.transferState),
+          map(users => UserActions.loadUsersSuccess({ users })),
+          catchError(error => of(UserActions.loadUsersFailure({ error })))
+        )
+      )
+    )
+  );
+
+  loadUserById$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(UserActions.loadUser),
+      switchMap(({ id }) =>
+        this.userService.getUserById(id).pipe(
+          withTransferState(`user-${id}`, this.platformId, this.transferState),
+          map(user => UserActions.loadUserSuccess({ user })),
+          catchError(error => of(UserActions.loadUserFailure({ error })))
+        )
+      )
+    )
+  );
+}
+```
+
 ## Configuration Options
 
 ```typescript
@@ -169,6 +288,17 @@ Provides additional store slices for feature modules or lazy-loaded routes.
 - `stores`: Array of store slice names
 
 **Returns:** `EnvironmentProviders`
+
+### `withTransferState<T>(key, platformId, transferState)`
+
+RxJS operator that prevents duplicate HTTP requests during SSR hydration.
+
+**Parameters:**
+- `key`: Unique identifier for the request
+- `platformId`: Angular PLATFORM_ID injection token
+- `transferState`: Angular TransferState service
+
+**Returns:** `OperatorFunction<T, T>`
 
 ## Development
 

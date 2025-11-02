@@ -13,6 +13,9 @@ export * from './lib/tokens';
 export * from './lib/utils';
 export * from './lib/rehydration-logger';
 
+// RxJS operators
+export * from './lib/transfer-state.operator';
+
 // Legacy NgModule-based API (Deprecated - use standalone providers instead)
 /**
  * @deprecated Use `provideRehydrateBrowser()` instead
