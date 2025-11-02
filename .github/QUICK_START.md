@@ -25,25 +25,38 @@ npm install
 
 ## 📦 Publishing a New Version
 
-### Quick Method (3 steps):
+### Automatic Publishing (Every Push to Master)
+
+**The library automatically publishes on every push to `master` branch!**
+
+Version number is auto-generated as: `{angularVersion}.{buildNumber}`
+
+**Example:**
+- Angular version: `19.2.4`
+- Build #42
+- Published version: `19.2.42`
 
 ```bash
-# 1. Bump version
-npm version patch  # or: minor, major
-
-# 2. Commit and push
+# Just commit and push your changes
 git add .
-git commit -m "chore: bump to v1.0.1"
-git push origin main
-
-# 3. Create GitHub Release
-# Go to: https://github.com/YOUR_ORG/ngx-rehydrate/releases/new
-# Tag: v1.0.1
-# Title: @solidexpert/ngx-rehydrate v1.0.1
-# Click "Publish release"
+git commit -m "feat: add new feature"
+git push origin master
 ```
 
-🎉 GitHub Actions will automatically publish to npm!
+🎉 GitHub Actions will automatically:
+1. Generate version number (e.g., `19.2.42`)
+2. Build the library
+3. Publish to npm
+
+### Manual Publishing
+
+You can also trigger publishing manually:
+
+1. Go to GitHub → Actions
+2. Select "Publish @solidexpert/ngx-rehydrate to npm"
+3. Click "Run workflow"
+4. Select branch
+5. Click "Run workflow"
 
 ## 🧪 Test Build Locally
 
@@ -62,17 +75,25 @@ cd dist
 npm pack
 ```
 
-## 📊 Version Types
+## 📊 Version Numbering
 
-- `npm version patch` → 1.0.0 → 1.0.1 (bug fixes)
-- `npm version minor` → 1.0.0 → 1.1.0 (new features)
-- `npm version major` → 1.0.0 → 2.0.0 (breaking changes)
+Versions are automatically generated based on:
+- **Angular version**: Extracted from `@angular/core` in `devDependencies`
+- **Build number**: GitHub Actions run number
+
+**Format:** `{angularMajor}.{angularMinor}.{buildNumber}`
+
+**Examples:**
+- Angular 19.2.x + Build #1 → `19.2.1`
+- Angular 19.2.x + Build #50 → `19.2.50`
+- Angular 20.0.x + Build #100 → `20.0.100`
 
 ## 🔍 Monitor
 
 - **Workflow Status**: GitHub → Actions tab
 - **npm Package**: https://npmjs.com/package/@solidexpert/ngx-rehydrate
-- **Test Install**: `npm install @solidexpert/ngx-rehydrate@latest`
+- **Latest Version**: `npm view @solidexpert/ngx-rehydrate version`
+- **Install Latest**: `npm install @solidexpert/ngx-rehydrate@latest`
 
 ## 📖 Full Documentation
 

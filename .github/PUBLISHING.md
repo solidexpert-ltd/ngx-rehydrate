@@ -2,50 +2,74 @@
 
 This guide walks you through the process of publishing a new version of the `@solidexpert/ngx-rehydrate` library to npm.
 
-## Prerequisites
+## 🚀 Automatic Publishing (Default)
 
-Before you can publish, ensure:
+**The library automatically publishes on every push to `master` or `main` branch!**
+
+### Prerequisites
 
 1. ✅ You have npm publish permissions for the `@solidexpert` scope
 2. ✅ The `NPM_TOKEN` secret is configured in GitHub (see [workflows README](workflows/README.md))
-3. ✅ All changes are committed and pushed to the repository
-4. ✅ The build passes locally (`npm run build`)
+3. ✅ The build passes locally (`npm run build`)
 
-## Publishing Steps
+### Publishing Steps
 
-### Step 1: Update Version
-
-Update the version in `package.json`:
+**Just push to master:**
 
 ```bash
-npm version patch  # or minor, or major
+# 1. Make your changes
+git add .
+git commit -m "feat: add new feature"
+
+# 2. Push to master
+git push origin master
 ```
 
-This will update the version according to [semver](https://semver.org/):
-- `patch` (1.0.0 → 1.0.1): Bug fixes
-- `minor` (1.0.0 → 1.1.0): New features, backward compatible
-- `major` (1.0.0 → 2.0.0): Breaking changes
+That's it! The workflow will automatically:
+1. Generate version number (e.g., `19.2.42`)
+2. Build the library
+3. Publish to npm
 
-### Step 2: Commit Version Change
+### Version Numbering
+
+Versions are **automatically generated** in the format:
+
+```
+{angularMajor}.{angularMinor}.{buildNumber}
+```
+
+**Example:**
+- Angular version in `package.json`: `19.2.4`
+- GitHub Actions build #42
+- Published version: **`19.2.42`**
+
+**The version increases automatically with each push!**
+
+### When You Update Angular
+
+When you update Angular in `devDependencies`, the version automatically adjusts:
 
 ```bash
-git add package.json
-git commit -m "chore: bump to vX.X.X"
-git push origin main
+# Before: Angular 19.2.x → Publishing v19.2.42
+npm install @angular/core@20.0.0
+git commit -m "chore: update to Angular 20"
+git push origin master
+# After: Angular 20.0.x → Publishing v20.0.43 (next build)
 ```
 
-### Step 3: Create a GitHub Release
+The version major/minor follows Angular, while patch follows your build number!
 
-1. Go to your repository on GitHub
-2. Click on **"Releases"** (right sidebar)
-3. Click **"Draft a new release"**
-4. Fill in the details:
-   - **Tag**: Create a new tag (e.g., `v1.0.1`)
-   - **Release title**: `@solidexpert/ngx-rehydrate v1.0.1`
-   - **Description**: Add release notes (see template below)
-5. Click **"Publish release"**
+## 📋 Manual Publishing (Optional)
 
-The GitHub Action will automatically trigger and publish to npm.
+You can also trigger publishing manually without pushing:
+
+1. Go to your GitHub repository → Actions
+2. Click on "Publish @solidexpert/ngx-rehydrate to npm"
+3. Click "Run workflow"
+4. Select the branch (usually `master`)
+5. Click "Run workflow"
+
+The same automatic versioning applies.
 
 ### Release Notes Template
 

@@ -19,13 +19,13 @@ Two workflows have been created in `.github/workflows/`:
   - Creates build summary
 
 #### b) `publish-rehydrate.yml` - Automated Publishing
-- **Triggers**: GitHub releases, manual
+- **Triggers**: Every push to master/main, manual
 - **Purpose**: Publishes library to npm
 - **Features**:
+  - Auto-generates version: `{angularVersion}.{buildNumber}`
   - Builds in production mode
   - Publishes to npm registry with public access
-  - Supports manual version override
-  - Creates publish summary
+  - Creates publish summary with version info
 
 ### 2. Package Configuration Updates
 
@@ -80,35 +80,32 @@ Created comprehensive documentation:
 
 ### Publishing Your First Version
 
-#### Method 1: Via GitHub Release (Recommended)
+#### Automatic Publishing (Default)
 
-1. Update version:
-   ```bash
-   npm version 1.0.0  # or your desired version
-   ```
+**Just push to master - that's it!**
 
-2. Commit and push:
+1. Make your changes and commit:
    ```bash
    git add .
-   git commit -m "chore: prepare v1.0.0"
-   git push origin main
+   git commit -m "feat: initial release"
+   git push origin master
    ```
 
-3. Create GitHub Release:
-   - Go to GitHub → Releases → "Draft a new release"
-   - Tag: `v1.0.0`
-   - Title: `@solidexpert/ngx-rehydrate v1.0.0`
-   - Description: Add release notes
-   - Click "Publish release"
+2. ✅ The workflow automatically:
+   - Generates version (e.g., `19.2.1` for first build)
+   - Builds the library
+   - Publishes to npm
 
-4. ✅ The workflow automatically publishes to npm!
+**Version Format:** `{angularVersion}.{buildNumber}`
+- Example: Angular 19.2.x + Build #1 = `19.2.1`
+- Each push increments the build number automatically
 
-#### Method 2: Manual Workflow
+#### Manual Trigger (Optional)
 
 1. Go to GitHub → Actions
 2. Select "Publish @solidexpert/ngx-rehydrate to npm"
 3. Click "Run workflow"
-4. Enter version (optional)
+4. Select branch
 5. Click "Run workflow"
 
 ### Testing Locally Before Publishing
@@ -154,18 +151,22 @@ npm install /path/to/@solidexpert-ngx-rehydrate-1.0.0.tgz
 ### Publish Workflow
 
 **When it runs**:
-- ✅ On GitHub release creation
-- ✅ Manual trigger (with optional version)
+- ✅ On every push to master/main branch
+- ✅ Manual trigger
 
 **What it does**:
 1. Checks out code
 2. Sets up Node.js 20 with npm registry
-3. Installs ng-packagr and dependencies
-4. Optionally updates version
-5. Builds library using ng-packagr
-6. Verifies build output in `dist/`
-7. Publishes to npm from `dist/`
-8. Creates publish summary
+3. Installs dependencies
+4. **Auto-generates version** from Angular version + build number
+5. Updates package.json with new version
+6. Builds library using ng-packagr
+7. Verifies build output in `dist/`
+8. Publishes to npm from `dist/`
+9. Creates publish summary with version info
+
+**Version Format**: `{angularMajor}.{angularMinor}.{buildNumber}`
+- Example: Angular 19.2.4 + Build #42 = Version `19.2.42`
 
 **Required Secret**: `NPM_TOKEN`
 
@@ -180,10 +181,10 @@ npm install /path/to/@solidexpert-ngx-rehydrate-1.0.0.tgz
 ### Common Issues
 
 #### ❌ "Version already published"
-**Solution**: Bump the version number:
-```bash
-npm version patch  # or minor, or major
-```
+**This should not happen** with automatic versioning, as each build gets a unique version number. If it does occur:
+- Check that the workflow generated a unique version
+- The build number should increment automatically
+- Contact maintainers if the issue persists
 
 #### ❌ "NPM_TOKEN not found" or "403 Forbidden"
 **Solution**: 

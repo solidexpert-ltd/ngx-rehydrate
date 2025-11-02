@@ -1,14 +1,11 @@
 name: Publish @solidexpert/ngx-rehydrate to npm
 
 on:
-  release:
-    types: [created]
+  push:
+    branches:
+      - master
+      - main
   workflow_dispatch:
-    inputs:
-      version:
-        description: 'Version to publish (e.g., 1.0.0)'
-        required: false
-        type: string
 
 jobs:
   build-and-publish:
@@ -27,9 +24,24 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Update version if specified
-        if: github.event.inputs.version != ''
-        run: npm version ${{ github.event.inputs.version }} --no-git-tag-version
+      - name: Generate version number
+        id: version
+        run: |
+          # Extract Angular version from package.json
+          ANGULAR_VERSION=$(node -p "require('./package.json').devDependencies['@angular/core'].replace(/[^0-9.]/g, '')")
+          MAJOR_MINOR=$(echo $ANGULAR_VERSION | cut -d. -f1,2)
+          
+          # Use GitHub run number as build number
+          BUILD_NUMBER=${{ github.run_number }}
+          
+          # Generate version: {angularMajor}.{angularMinor}.{buildNumber}
+          NEW_VERSION="${MAJOR_MINOR}.${BUILD_NUMBER}"
+          
+          echo "version=${NEW_VERSION}" >> $GITHUB_OUTPUT
+          echo "Generated version: ${NEW_VERSION}"
+
+      - name: Update package version
+        run: npm version ${{ steps.version.outputs.version }} --no-git-tag-version
 
       - name: Build library
         run: npm run build
@@ -56,11 +68,12 @@ jobs:
           echo "## 📦 Package Published" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Package:** @solidexpert/ngx-rehydrate" >> $GITHUB_STEP_SUMMARY
-          echo "**Version:** $(node -p "require('./package.json').version")" >> $GITHUB_STEP_SUMMARY
+          echo "**Version:** ${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Build Number:** ${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
           echo "**Registry:** npmjs.org" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Installation" >> $GITHUB_STEP_SUMMARY
           echo '```bash' >> $GITHUB_STEP_SUMMARY
-          echo "npm install @solidexpert/ngx-rehydrate" >> $GITHUB_STEP_SUMMARY
+          echo "npm install @solidexpert/ngx-rehydrate@${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
 
