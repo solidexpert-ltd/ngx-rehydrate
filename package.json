@@ -11,10 +11,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/ngx-rehydrate.git"
+    "url": "https://github.com/solidexpert-ltd/ngx-rehydrate.git"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/ngx-rehydrate/issues"
+    "url": "https://github.com/solidexpert-ltd/ngx-rehydrate/issues"
   },
   "homepage": "solid.expert",
   "peerDependencies": {
