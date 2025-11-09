@@ -18,25 +18,25 @@
   },
   "homepage": "solid.expert",
   "peerDependencies": {
-    "@angular/common": "^19.0.0",
-    "@angular/core": "^19.0.0",
-    "@angular/platform-server": "^19.0.0",
-    "@ngrx/store": "^19.0.0",
-    "rxjs": "^7.0.0"
+    "@angular/common": "^20.0.0",
+    "@angular/core": "^20.0.0",
+    "@angular/platform-server": "^20.0.0",
+    "@ngrx/store": "^20.0.0",
+    "rxjs": "^7.8.0"
   },
   "dependencies": {
     "tslib": "^2.6.0"
   },
   "devDependencies": {
-    "@angular/common": "^19.2.4",
-    "@angular/compiler": "^19.2.4",
-    "@angular/compiler-cli": "^19.2.4",
-    "@angular/core": "^19.2.4",
-    "@angular/platform-server": "^19.2.4",
-    "@ngrx/store": "^19.1.0",
-    "ng-packagr": "^19.2.2",
+    "@angular/common": "^20.0.0",
+    "@angular/compiler": "^20.0.0",
+    "@angular/compiler-cli": "^20.0.0",
+    "@angular/core": "^20.0.0",
+    "@angular/platform-server": "^20.0.0",
+    "@ngrx/store": "^20.0.0",
+    "ng-packagr": "20.1.0",
     "rxjs": "^7.8.1",
-    "typescript": "~5.8.2"
+    "typescript": "~5.8.0"
   }
 }
 

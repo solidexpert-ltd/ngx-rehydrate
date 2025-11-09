@@ -12,6 +12,13 @@ NgRx state rehydration library for Angular Universal SSR applications.
 - ⚡ Modern standalone API (no modules required)
 - 🔧 Backward compatible with NgModule-based apps
 
+## Angular Compatibility
+
+| Library version | Angular version |
+| --------------- | ---------------- |
+| `20.x.x`        | 20               |
+| `19.x.x`        | 19               |
+
 ## Installation
 
 ```bash
