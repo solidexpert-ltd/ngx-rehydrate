@@ -2,6 +2,8 @@
 
 NgRx state rehydration library for Angular Universal SSR applications.
 
+When an Angular app renders on the server, it initializes NgRx state with the latest data. Without rehydration, the browser would bootstrap with an empty store, replaying the same HTTP calls and briefly showing inconsistent UI. Rehydrating transfers the server state into the browser so the client starts fully populated—no duplicate API requests, no flicker, just a seamless transition.
+
 ## Features
 
 - 🚀 Seamless state transfer between server and browser
