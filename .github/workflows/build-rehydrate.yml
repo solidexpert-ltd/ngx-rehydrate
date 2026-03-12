@@ -60,7 +60,7 @@ jobs:
           node -p "JSON.stringify(require('./package.json'), null, 2)"
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: matrix.node-version == 20
         with:
           name: ngx-rehydrate-build
