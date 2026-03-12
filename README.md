@@ -18,6 +18,7 @@ When an Angular app renders on the server, it initializes NgRx state with the la
 
 | Library version | Angular version |
 | --------------- | ---------------- |
+| `21.x.x`        | 21               |
 | `20.x.x`        | 20               |
 | `19.x.x`        | 19               |
 
