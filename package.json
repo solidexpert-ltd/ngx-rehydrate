@@ -30,7 +30,7 @@
   "devDependencies": {
     "@angular/common": "^21.0.0",
     "@angular/compiler": "^21.0.0",
-    "@angular/compiler-cli": "^21.0.0",
+    "@angular/compiler-cli": "^22.0.0",
     "@angular/core": "^21.0.0",
     "@angular/platform-server": "^21.0.0",
     "@ngrx/store": "^21.0.0",
