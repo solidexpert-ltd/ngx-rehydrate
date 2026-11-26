@@ -33,14 +33,9 @@ jobs:
         id: version
         run: |
           # Extract Angular version from package.json
-          ANGULAR_VERSION=$(node -p "require('./package.json').devDependencies['@angular/core'].replace(/[^0-9.]/g, '')")
-          MAJOR_MINOR=$(echo $ANGULAR_VERSION | cut -d. -f1,2)
-          
-          # Use GitHub run number as build number
+          ANGULAR_MAJOR=$(node -p "const p=require('./package.json'); const raw=p.devDependencies['@angular/core']; if(!raw) throw new Error('missing @angular/core'); String(raw).replace(/^[^0-9]*/,'').split('.')[0]")
           BUILD_NUMBER=${{ github.run_number }}
-          
-          # Generate version: {angularMajor}.{angularMinor}.{buildNumber}
-          NEW_VERSION="${MAJOR_MINOR}.${BUILD_NUMBER}"
+          NEW_VERSION="${ANGULAR_MAJOR}.0.${BUILD_NUMBER}"
           
           echo "version=${NEW_VERSION}" >> $GITHUB_OUTPUT
           echo "Generated version: ${NEW_VERSION}"
@@ -66,7 +61,10 @@ jobs:
             sed -i '/_authToken/d' "$NPM_CONFIG_USERCONFIG"
           fi
           cd dist
-          npm publish --access public
+          npm publish --access public --tag latest
+          NAME=$(node -p "require('./package.json').name")
+          VERSION=$(node -p "require('./package.json').version")
+          npm dist-tag add "${NAME}@${VERSION}" latest
 
       - name: Create build summary
         run: |
